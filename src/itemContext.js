@@ -12,23 +12,43 @@ function CustomeItemContext({ children }) {
   const [total, setTotal] = useState(0);
   const [item, setItem] = useState(0);
   const [showCart, setShowCart] = useState(false);
+  const [cart, setCart] = useState([]);
 
-  const handleAdd = (price) => {
-    setTotal(total + price);
-    setItem(item + 1);
+  const handleAdd = (prod) => {
+    const index = cart.findIndex((item) => item.id === prod.id);
+
+    if (index === -1) {
+      setCart([...cart, { ...prod, qyt:1 }]);
+      
+      setTotal(total + prod.price);
+    }
+    else{
+      cart[index].qyt++;
+      setCart(cart);
+      setTotal(total+cart[index].price)
+    }
+    setItem(item+1);
   };
 
-  const handleRemove = (price) => {
-    if (total <= 0) {
-      return;
+  const handleRemove = (id) => {
+    const index = cart.findIndex((item)=>item.id===id);
+    if(index !== -1){
+      cart[index].qyt--;
+      setItem(item-1);
+      if(cart[index].qyt === 0){
+        cart.splice(index,1);
+      }
+      
     }
-    setTotal((prevState) => prevState - price);
-    setItem((prevState) => prevState - 1);
+    setCart(cart);
+    setTotal(total-cart[index].price);
+    
   };
 
   const clear = () => {
     setItem(0);
     setTotal(0);
+    setCart([]);
   };
 
   const toggle = () => {
@@ -37,8 +57,8 @@ function CustomeItemContext({ children }) {
 
 
   return (
-    <itemContext.Provider value={{ total, item, handleAdd, handleRemove, clear, toggle }}>
-       {showCart && <CartModal toggle ={toggle}/>}
+    <itemContext.Provider value={{ total, item, handleAdd, handleRemove, clear, toggle ,cart}}>
+      {showCart && <CartModal/>}
       {children}
     </itemContext.Provider>
   )

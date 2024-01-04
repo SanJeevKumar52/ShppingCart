@@ -6,9 +6,9 @@ function Items() {
     <div className={styles.wrapper}>
       {data.map((item) => (
         <ItemCard 
-                 key={item.id} 
-                 name={item.name} 
-                 price={item.price} />
+                  id={item.id} 
+                  name={item.name} 
+                  price={item.price} />
       ))}
     </div>
   );
